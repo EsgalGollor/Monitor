@@ -4,6 +4,7 @@ Add-Type -AssemblyName System.Drawing
 $currentDir = [System.IO.Directory]::GetCurrentDirectory()
 $logPath = "$currentDir\hunter_log.txt"
 
+# Функція зачистки автозапуску
 function Remove-Autorun ($badPath) {
     $runPaths = @("HKCU:\Software\Microsoft\Windows\CurrentVersion\Run", "HKLM:\Software\Microsoft\Windows\CurrentVersion\Run")
     foreach ($path in $runPaths) {
@@ -17,6 +18,7 @@ function Remove-Autorun ($badPath) {
     }
 }
 
+# Створення форми (GUI)
 $form = New-Object System.Windows.Forms.Form
 $form.Text = "Process Hunter v1.0"
 $form.Size = New-Object System.Drawing.Size(380,200)
@@ -45,6 +47,7 @@ $button.ForeColor = [System.Drawing.Color]::White
 $button.Font = New-Object System.Drawing.Font("Arial", 10, [System.Drawing.FontStyle]::Bold)
 $form.Controls.Add($button)
 
+# Логіка кнопки
 $button.Add_Click({
     $global:target = $textBox.Text.Trim()
     if ([string]::IsNullOrEmpty($global:target)) {
@@ -52,6 +55,7 @@ $button.Add_Click({
         return
     }
     
+    # Ховаємо вікно і переходимо у фоновий цикл
     $form.Hide()
     
     while ($true) {
@@ -70,6 +74,7 @@ $button.Add_Click({
                 $time = (Get-Date).ToString("yyyy-MM-dd HH:mm:ss")
                 "[{0}] KILLED & DELETED: {1} ({2})" -f $time, $global:target, $pPath | Out-File $logPath -Append
                 
+                # Виходимо з циклу і закриваємо утиліту після виконання завдання
                 break
             }
         }
